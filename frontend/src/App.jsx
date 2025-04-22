@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
+import ContactForm from './form'
 
 
 function App() {
   const [contacts, setContacts] = useState({});
   const [error, setError] = useState(null);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -15,7 +17,6 @@ function App() {
       const response = await fetch(url);
       const data = await response.json();
       setContacts(data.contacts);
-      console.log(data.contacts);
 
     } catch (err) {
       setError(err.message);
@@ -23,7 +24,7 @@ function App() {
   };
 
   const handleDelete = async(id) => {
-    const url = `http://127.0.0.1:5000//delete_contact/${id}`
+    const url = `http://127.0.0.1:5000/delete_contact/${id}`
     try {
       const response = await fetch(url)
       
@@ -32,8 +33,8 @@ function App() {
       }
       else{
           setError(null)
-          alert("Contact Deleted Successsfully.")
           setContacts(prevContacts => prevContacts.filter(contact => contact.id !== id));
+          alert("contact Deleted Successfully.")
       }
     }
     catch (err){
@@ -43,8 +44,15 @@ function App() {
   };
   
   const handleUpdate = (id) =>{
-    alert(`hello world ${id}`)
+    const url = `http://127.0.0.1:5000/update_contact`
+    alert("Update Button") 
+
   }
+
+  const toggleForm = () => {
+    setShowForm(prev => !prev);
+  };
+
 
   return (
     <>
@@ -74,6 +82,11 @@ function App() {
       ) : (
         <p>No contacts available</p>
       )}
+      <button onClick={toggleForm}>
+        {showForm ? 'Close Form' : 'Add Contact'}
+      </button>
+
+      {showForm && <ContactForm />}
 
     </>
   );

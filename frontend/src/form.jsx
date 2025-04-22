@@ -1,58 +1,95 @@
 import { useState, useEffect } from 'react'
+import App from './App'
+
+function ContactForm({ }) {
+    const [firstName, setFirstName] = useState("")
+    const [lastName, setLastName] = useState("")
+    const [email, setEmail] = useState("")
+    const [phone, setPhone] = useState("")
 
 
-function App() {
-    const []
 
+    const handleCreate = async(e) => {
+        e.preventDefault();
+
+        const contactData = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phone: phone
+        };
+        console.log(contactData)
+        const url = `http://127.0.0.1:5000/create_contact`
+
+        const options = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(contactData)
+        }
+
+        const response = await fetch(url, options)
+        if (response.status !== 201 && response.status !== 200){
+            const data =await response.json()
+            alert(data.message)
+        }else{
+            alert("Successfully Added Contact.")
+            setFirstName("")
+            setLastName("")
+            setEmail("")
+            setPhone("")
+        }
+    }
+    
     return (
         <>
-            <form onSubmit={handleSubmit}>
-                <h3>{selectedContact ? "Update Contact" : "Add New Contact"}</h3>
+            <h2>Create Contact</h2>
+            <form onSubmit={handleCreate}>
                 <div>
-                    <label>First Name:</label>
+                    <label>First Name:</label><br />
                     <input
                         type="text"
                         name="firstName"
-                        value={formData.firstName}
-                        onChange={handleChange}
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
                         required
                     />
                 </div>
                 <div>
-                    <label>Last Name:</label>
+                    <label>Last Name:</label><br />
                     <input
                         type="text"
                         name="lastName"
-                        value={formData.lastName}
-                        onChange={handleChange}
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
                         required
                     />
                 </div>
                 <div>
-                    <label>Email:</label>
+                    <label>Email:</label><br />
                     <input
                         type="email"
                         name="email"
-                        value={formData.email}
-                        onChange={handleChange}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </div>
                 <div>
-                    <label>Phone:</label>
+                    <label>Phone:</label><br />
                     <input
-                        type="text"
+                        type="tel"
                         name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
                         required
                     />
                 </div>
-                <button type="submit">{selectedContact ? "Update Contact" : "Add Contact"}</button>
+                <button type="submit">Save Contact</button>
             </form>
-
         </>
     );
 }
 
-export default App
+export default ContactForm
